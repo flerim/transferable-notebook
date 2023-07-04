@@ -1,6 +1,6 @@
 # Transferable notebook work
 
-This project provides a way to manage transfering notebook works across data scientists in a way that is reproducible and easy to work with.
+This project provides a way to manage datascience notebook hell so that data scientists can work across is a way that is easily reproducible.
 
 It includes:
 
@@ -8,13 +8,29 @@ It includes:
 
 2. A Json file storing workspace configuration
 
-3. A control script
+3. A control script `transferctl`
 
-The dockerfile enables building an image which includes all the dependencies for the project as they are reflected in dev_requirements.txt. This image is subsequently used to launch and run a jupyterlab server that mounts a directory specified in the configuration file from the host inside the container and exposes in the jupyterlab server.
+The entire operation consists of a few steps that can be performed via the control script. The user needs to only have defined the working directory where work is planned to be performed, e.g. notebooks, code, and data is going to reside. Modifying the example configuration file, building the image and launching the container. Then performing work from within the container using the notebook and finally saving the container to also include the workspace via the control script. Finally, the image can be pushed to a repository and published as needed. 
 
-The script can be used to commit the container with the name specified in the json configuration file (transfer-control.json). Then start the container , or stop, or even purge the container to start anew. Finally the container can be commited and pushed with a copy of the workspace in repository specified in the confgiuration file. The configuration file is a json. 
+## Definition of workspace
 
-# Dev-notes
+One needs to define in the control configuration file ( customizable via the first positional argument of the control script ) the following parameters:
+
+- The container name `{"container": {"name": "<value of container name>"}}` which is going to be used to name the container. One should take care to avoid overwriting currently running containers. 
+- The image name `{"image" : {"name" : "<value of image name>"}}`
+- The host-directory `{"volume":{"host-directory":"<location on host to mount>"}}` , this is where all the code, models, and data can be found
+
+## Using the script
+
+1. `transferctl --build` to build the image if it does not exist. It is advised to have a different for each workspace
+2. `transferctl --start` to launch the container , then it can be accessed by clicking on the provided link
+
+The options to stop and delete a container are provided also. 
+
+Finally the user may decide to commit the container if there have been changes or to save and publish the container with `--save` and `--push` arguments.
+
+
+## Dev-notes
 
 This was created with the help of GPT4 with the initial prompt:
 
