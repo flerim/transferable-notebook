@@ -1,0 +1,19 @@
+ARG BASE_CONTAINER=nvcr.io/nvidia/pytorch:23.06-py3
+FROM ${BASE_CONTAINER}
+
+RUN pip3 install --upgrade pip wheel
+RUN pip install transformers
+RUN pip uninstall -y notebook
+RUN pip install -U jupyterlab
+RUN mkdir -p /tf
+
+# Set the working directory inside the container
+WORKDIR /tf
+
+# Copy the requirements file to the container
+COPY dev_requirements.txt .
+
+# Install the Python dependencies
+RUN pip install --no-cache-dir -r dev_requirements.txt
+
+CMD ["bash","-c","source /etc/bash.bashrc && jupyter-lab --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]

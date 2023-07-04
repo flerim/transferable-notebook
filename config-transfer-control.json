@@ -1,0 +1,28 @@
+{
+    "container": {
+        "name": "transfer-default-notebook"
+    },
+
+    "image" : {
+        "name" : "transfer-default-image"
+    },
+
+    "volume": {
+        "host-directory" : "/home/tron/work/dev/",
+        "mount-point" : "/tf/inside-work"
+    },
+
+    "commit": {
+        "name": "bare-notebook:latest",
+        "repo": "crazy.io"
+    },
+
+    "ports": {
+        "default" : [8888, 6006]
+    },
+
+    "gpu": {
+        "gpus" : "all",
+        "ulimit" : ["memlock=-1", "stack=67108864"]
+    }
+}

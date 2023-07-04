@@ -1,0 +1,24 @@
+
+Build a python script that reads a configuration file name "transfer-control.py" or otherwise specified via command line argument. The script has a build argument that builds an image named as specified in the configuration file. The script has a start argument that starts the a container with name as specified in the configuration file for the image specified in the configuration file. During start of the container a volume is mounted for a directory as specified in the configuration file. The script has a commit argument that permits to commit the container as an image and push to a configuration specified docker repository. There is also the argument for the script to save the running container with the same parameters as in the commit but also having copied before the contents of the mounted volume in the container in the '/archive' directory. Please generate the python script for the provided below json configuration file:
+
+{
+    "container": {
+        "name": "transfer-default-notebook"
+
+    },
+
+    "image" : {
+        "name" : "transfer-defaul-image"
+    },
+
+    "volume": {
+        "mount-point" : "/tf",
+        "host-directory" : "."
+    },
+
+    "commit": {
+        "name": "bare-notebook-latest",
+        "repo": "nvcr.io"
+    },
+
+}
