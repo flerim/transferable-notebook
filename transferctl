@@ -110,7 +110,7 @@ def main():
                         help="Start the container")
     parser.add_argument("--commit", action="store_true",
                         help="Commit the container")
-    parser.add_argument("--push", action="push_true",
+    parser.add_argument("--push", action="store_true",
                         help="Push the tagged image")
     parser.add_argument("--save", action="store_true",
                         help="Save the container")
