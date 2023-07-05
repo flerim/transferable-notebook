@@ -1,4 +1,4 @@
-# Transferable notebook work
+# Transferable work notebook
 
 This project provides a way to manage datascience notebook hell so that data scientists can work across is a way that is easily reproducible.
 
@@ -14,7 +14,9 @@ The entire operation consists of a few steps that can be performed via the contr
 
 ## Definition of workspace
 
-One needs to define in the control configuration file ( customizable via the first positional argument of the control script ) the following parameters:
+One needs to define in the control configuration file ( customizable via the first positional argument of the control script ). 
+
+**First copy the example configuration** file example-configuration.json to configuration.json and set the following parameters:
 
 - The container name `{"container": {"name": "<value of container name>"}}` which is going to be used to name the container. One should take care to avoid overwriting currently running containers. 
 - The image name `{"image" : {"name" : "<value of image name>"}}`

@@ -103,7 +103,7 @@ def delete_container(config):
 
 def main():
     parser = argparse.ArgumentParser(description="Transfer control script")
-    parser.add_argument("config", nargs="?", default="config-transfer-control.json",
+    parser.add_argument("config", nargs="?", default="configuration.json",
                         help="Configuration file (default: transfer-control.json)")
     parser.add_argument("--build", action="store_true", help="Build the image")
     parser.add_argument("--start", action="store_true",

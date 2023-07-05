@@ -8,7 +8,7 @@
     },
 
     "volume": {
-        "host-directory" : "/home/tron/work/dev/",
+        "host-directory" : "<replace with your workspace directory>",
         "mount-point" : "/tf/inside-work"
     },
 
