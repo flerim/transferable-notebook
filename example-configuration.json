@@ -8,7 +8,7 @@
     },
 
     "volume": {
-        "host-directory" : "<replace with your workspace directory>",
+        "host-directory" : "<replace with host workspace directory>",
         "mount-point" : "/tf/inside-work"
     },
 
@@ -18,11 +18,18 @@
     },
 
     "ports": {
-        "default" : [8888, 6006]
+        "public" : [8080],
+        "jupyter" : 8080
     },
 
     "gpu": {
         "gpus" : "all",
         "ulimit" : ["memlock=-1", "stack=67108864"]
+    },
+
+    "docker": {
+        "options": {
+            "--ipc": "host"
+        }
     }
 }

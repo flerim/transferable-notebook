@@ -2,7 +2,6 @@
 
 import argparse
 import json
-import os
 import subprocess
 
 
@@ -23,13 +22,16 @@ def start_container(config):
     image_name = config["image"]["name"]
     volume_mount_point = config["volume"]["mount-point"]
     host_directory = config["volume"]["host-directory"],
-    portmaps = [
-        f"{portnumber}:{portnumber}" for portnumber in config["ports"]["default"]]
+    portmaps = [f"{portnumber}:{portnumber}"
+                for portnumber in config["ports"]["public"]]
 
     # Check if the container already exists
     container_exists = False
     result = subprocess.run(["docker", "ps", "-a", "--filter",
-                             f"name={container_name}", "--format", "{{.Names}}"], capture_output=True, text=True)
+                             f"name={container_name}",
+                             "--format", "{{.Names}}"],
+                            capture_output=True, text=True)
+
     if container_name in result.stdout.strip().split('\n'):
         container_exists = True
 
@@ -45,11 +47,20 @@ def start_container(config):
             run_list += ["-p", portmap]
 
         if "gpu" in config.keys():
+            if "gpus" in config["gpu"].keys():
+                run_list += ["--gpus", config["gpu"]["gpus"]]
+
             for ulimit in config["gpu"]["ulimit"]:
                 run_list += ["--ulimit", ulimit]
 
-            if "gpus" in config["gpu"].keys():
-                run_list += ["--gpus", config["gpu"]["gpus"]]
+        if "docker" in config.keys() and \
+                "options" in config["docker"].keys():
+            for opt, value in config["docker"]["options"].items():
+                run_list += [opt, value]
+
+        if "jupyter" in config["ports"].keys():
+            jupyter_port = config["ports"]["jupyter"]
+            run_list += ["-e", f"JUPYTER_PORT={jupyter_port}"]
 
         run_list += [image_name]
 

@@ -16,4 +16,6 @@ COPY dev_requirements.txt .
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r dev_requirements.txt
 
-CMD ["bash","-c","source /etc/bash.bashrc && jupyter-lab --notebook-dir=/tf --ip 0.0.0.0 --no-browser --allow-root"]
+ENV JUPYTER_PORT=8888
+ENV NOTEBOOK_DIR=/tf
+CMD ["bash","-c","source /etc/bash.bashrc && jupyter-lab --notebook-dir=${NOTEBOOK_DIR} --ip 0.0.0.0 --port ${JUPYTER_PORT} --no-browser --allow-root"]
