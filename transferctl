@@ -3,6 +3,7 @@
 import argparse
 import json
 import subprocess
+import socket
 
 
 def read_config_file(filename):
@@ -15,6 +16,39 @@ def build_image(config):
     image_name = config["image"]["name"]
     subprocess.run(
         ["docker", "build", "-f", "Dockerfile.work", "-t", image_name, "."])
+
+
+def is_port_open(port):
+    # Create a socket object
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        try:
+            # Try to connect to the localhost on the specified port
+            sock.connect(("localhost", port))
+            # If the connection is successful, the port is open
+            print(f"Port {port} is open.")
+            return True
+        except ConnectionRefusedError:
+            # If the connection is refused, the port is closed or not reachable
+            print(f"Port {port} is closed or not reachable.")
+            return False
+
+
+def find_open_port(start_port):
+    # Use a try-except block to handle potential exceptions
+    try:
+        # Iterate over subsequent port numbers
+        for port in range(start_port, 65536):
+            if not is_port_open(port):
+                return port
+    except KeyboardInterrupt:
+        # Allow user to interrupt the process by pressing Ctrl+C
+        print("Process interrupted by user.")
+    except Exception as e:
+        # Handle other exceptions gracefully
+        print(f"An error occurred: {str(e)}")
+
+    # Return None if no open port is found
+    return None
 
 
 def start_container(config):
@@ -60,6 +94,9 @@ def start_container(config):
 
         if "jupyter" in config["ports"].keys():
             jupyter_port = config["ports"]["jupyter"]
+            jupyter_port = find_open_port(jupyter_port)
+            if jupyter_port not in config["ports"]["public"]:
+                run_list += ["-p", f"{jupyter_port}:{jupyter_port}"]
             run_list += ["-e", f"JUPYTER_PORT={jupyter_port}"]
 
         run_list += [image_name]
