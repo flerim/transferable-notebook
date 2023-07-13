@@ -60,6 +60,42 @@ def is_container_paused(container_name):
     return output == "true"
 
 
+def is_container_running(container_name):
+    command = """docker inspect --format="{{.State.Running}}" """ + \
+        f'{container_name}'
+    result = subprocess.run(command, shell=True,
+                            capture_output=True, text=True)
+    output = result.stdout.strip()
+    return output == "true"
+
+
+def is_container_allocated(container_name):
+    container_exists = False
+    result = subprocess.run(["docker", "ps", "-a", "--filter",
+                             f"name={container_name}",
+                             "--format", "{{.Names}}"],
+                            capture_output=True, text=True)
+
+    # Check if the container already exists
+    if container_name in result.stdout.strip().split('\n'):
+        container_exists = True
+
+    return container_exists
+
+
+def check_container_status(config):
+    container_name = config["container"]["name"]
+
+    if is_container_allocated(container_name):
+        container_state = "Paused" if is_container_paused(
+            container_name) else "Allocated"
+        container_state = container_state if is_container_running(
+            container_name) else "Stopped"
+        print(f"Container: {container_name}={container_state}")
+    else:
+        print(f"Container: {container_name}=Deallocated")
+
+
 def start_container(config):
     container_name = config["container"]["name"]
     image_name = config["image"]["name"]
@@ -68,17 +104,7 @@ def start_container(config):
     portmaps = [f"{portnumber}:{portnumber}"
                 for portnumber in config["ports"]["public"]]
 
-    # Check if the container already exists
-    container_exists = False
-    result = subprocess.run(["docker", "ps", "-a", "--filter",
-                             f"name={container_name}",
-                             "--format", "{{.Names}}"],
-                            capture_output=True, text=True)
-
-    if container_name in result.stdout.strip().split('\n'):
-        container_exists = True
-
-    if container_exists:
+    if is_container_allocated(container_name):
         # Start the existing container
 
         if is_container_paused(container_name):
@@ -187,6 +213,8 @@ def main():
                         help="Push the tagged image")
     parser.add_argument("--save", action="store_true",
                         help="Save the container")
+    parser.add_argument("--status", action="store_true",
+                        help="Check container status")
     parser.add_argument("--connect", action="store_true",
                         help="Launch a shell in the container")
     parser.add_argument("--stop", action="store_true",
@@ -211,6 +239,8 @@ def main():
         stop_container(config)
     elif args.pause:
         pause_container(config)
+    elif args.status:
+        check_container_status(config)
     elif args.connect:
         connect_container(config)
     elif args.delete:
