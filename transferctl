@@ -136,6 +136,11 @@ def stop_container(config):
     subprocess.run(["docker", "stop", container_name])
 
 
+def pause_container(config):
+    container_name = config["container"]["name"]
+    subprocess.run(["docker", "pause", container_name])
+
+
 def delete_container(config):
     container_name = config["container"]["name"]
 
@@ -152,10 +157,12 @@ def delete_container(config):
 def main():
     parser = argparse.ArgumentParser(description="Transfer control script")
     parser.add_argument("config", nargs="?", default="configuration.json",
-                        help="Configuration file (default: transfer-control.json)")
+                        help="Configuration file (default: configuration.json)")
     parser.add_argument("--build", action="store_true", help="Build the image")
     parser.add_argument("--start", action="store_true",
                         help="Start the container")
+    parser.add_argument("--pause", action="store_true",
+                        help="Pause the container")
     parser.add_argument("--commit", action="store_true",
                         help="Commit the container")
     parser.add_argument("--push", action="store_true",
@@ -182,6 +189,8 @@ def main():
         push_container(config)
     elif args.stop:
         stop_container(config)
+    elif args.pause:
+        pause_container(config)
     elif args.delete:
         delete_container(config)
 
