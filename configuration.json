@@ -1,0 +1,29 @@
+{
+    "container": {
+        "name": "transfer-default-notebook-test-00"
+    },
+
+    "image" : {
+        "name" : "transfer-default-image",
+        "dockerfile": "Dockerfile.work"
+    },
+
+    "volume": {
+        "host-directory" : "/home/tron/tmp",
+        "mount-point" : "/tf/inside-work"
+    },
+
+    "commit": {
+        "name": "bare-notebook:latest",
+        "repo": "crazy.io"
+    },
+
+    "ports": {
+        "default" : [8889, 6007]
+    },
+
+    "gpu": {
+        "gpus" : "all",
+        "ulimit" : ["memlock=-1", "stack=67108864"]
+    }
+}

@@ -14,8 +14,9 @@ def read_config_file(filename):
 
 def build_image(config):
     image_name = config["image"]["name"]
+    docker_file = config["image"]["dockerfile"]
     subprocess.run(
-        ["docker", "build", "-f", "Dockerfile.work", "-t", image_name, "."])
+        ["docker", "build", "-f", f"{docker_file}", "-t", image_name, "."])
 
 
 def is_port_open(port):
