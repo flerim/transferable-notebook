@@ -51,6 +51,15 @@ def find_open_port(start_port):
     return None
 
 
+def is_container_paused(container_name):
+    command = """docker inspect --format="{{.State.Paused}}" """ + \
+        f'{container_name}'
+    result = subprocess.run(command, shell=True,
+                            capture_output=True, text=True)
+    output = result.stdout.strip()
+    return output == "true"
+
+
 def start_container(config):
     container_name = config["container"]["name"]
     image_name = config["image"]["name"]
@@ -71,7 +80,11 @@ def start_container(config):
 
     if container_exists:
         # Start the existing container
-        subprocess.run(["docker", "start", "-a", container_name])
+
+        if is_container_paused(container_name):
+            subprocess.run(["docker", "unpause", container_name])
+        else:
+            subprocess.run(["docker", "start", "-a", container_name])
     else:
         # Create and start a new container
         run_list = ["docker", "run", "--name", container_name,
