@@ -144,6 +144,11 @@ def push_container(config):
     subprocess.run(["docker", "push", f"{repo}/{commit_name}"])
 
 
+def connect_container(config):
+    container_name = config["container"]["name"]
+    subprocess.run(["docker", "exec", "-ti", container_name, "/bin/bash"])
+
+
 def stop_container(config):
     container_name = config["container"]["name"]
     subprocess.run(["docker", "stop", container_name])
@@ -182,6 +187,8 @@ def main():
                         help="Push the tagged image")
     parser.add_argument("--save", action="store_true",
                         help="Save the container")
+    parser.add_argument("--connect", action="store_true",
+                        help="Launch a shell in the container")
     parser.add_argument("--stop", action="store_true",
                         help="Stop the container")
     parser.add_argument("--delete", action="store_true",
@@ -204,6 +211,8 @@ def main():
         stop_container(config)
     elif args.pause:
         pause_container(config)
+    elif args.connect:
+        connect_container(config)
     elif args.delete:
         delete_container(config)
 
