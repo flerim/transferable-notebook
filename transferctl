@@ -205,18 +205,19 @@ def delete_container(config):
 def main():
     parser = argparse.ArgumentParser(description="Transfer control script")
     parser.add_argument("config", nargs="?", default="configuration.json",
-                        help="Configuration file (default: configuration.json)")
-    parser.add_argument("--build", action="store_true", help="Build the image")
+                        help="Specify alternate configuration file (default: configuration.json)")
+    parser.add_argument("--build", action="store_true",
+                        help="Build the base image specified in the Dockerfile and tag as specified in 'image' section of the configuration")
     parser.add_argument("--start", action="store_true",
                         help="Start the container")
     parser.add_argument("--pause", action="store_true",
                         help="Pause the container")
     parser.add_argument("--commit", action="store_true",
-                        help="Commit the container")
+                        help="Commit the container with details as specified in the 'commit' section fo the configuration file")
     parser.add_argument("--push", action="store_true",
                         help="Push the tagged image")
     parser.add_argument("--save", action="store_true",
-                        help="Save the container")
+                        help="Copy the work directory inside at location /tf/archive and commit")
     parser.add_argument("--status", action="store_true",
                         help="Check container status")
     parser.add_argument("--connect", action="store_true",
@@ -224,7 +225,7 @@ def main():
     parser.add_argument("--stop", action="store_true",
                         help="Stop the container")
     parser.add_argument("--delete", action="store_true",
-                        help="Delete the container")
+                        help="Delete the container, if an image has been commited the contents and status will be maintained")
     args = parser.parse_args()
 
     config = read_config_file(args.config)
