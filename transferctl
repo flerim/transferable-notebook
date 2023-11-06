@@ -14,9 +14,11 @@ def read_config_file(filename):
 
 def build_image(config):
     image_name = config["image"]["name"]
+    repo_name = config["image"]["repo"]
     docker_file = config["image"]["dockerfile"]
     subprocess.run(
-        ["docker", "build", "-f", f"{docker_file}", "-t", image_name, "."])
+        ["docker", "build", "-f", f"{docker_file}",
+         "-t", f"{repo_name}/{image_name}", "."])
 
 
 def is_port_open(port):
@@ -100,6 +102,7 @@ def check_container_status(config):
 def start_container(config):
     container_name = config["container"]["name"]
     image_name = config["image"]["name"]
+    repo_name = config["image"]["repo"]
     volume_mount_point = config["volume"]["mount-point"]
     host_directory = config["volume"]["host-directory"],
     portmaps = [f"{portnumber}:{portnumber}"
@@ -139,7 +142,7 @@ def start_container(config):
                 run_list += ["-p", f"{jupyter_port}:{jupyter_port}"]
             run_list += ["-e", f"JUPYTER_PORT={jupyter_port}"]
 
-        run_list += [image_name]
+        run_list += [f"{repo_name}/{image_name}"]
 
         print(run_list)
         subprocess.run(run_list)

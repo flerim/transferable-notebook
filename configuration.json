@@ -4,22 +4,24 @@
     },
 
     "image" : {
-        "name" : "transfer-default-image",
+        "name" : "transfer-default-notebook-test-00:latest",
+        "repo" : "my-local-repo",
         "dockerfile": "Dockerfile.work"
     },
 
     "volume": {
-        "host-directory" : "/home/tron/tmp",
+        "host-directory" : "test",
         "mount-point" : "/tf/inside-work"
     },
 
     "commit": {
-        "name": "bare-notebook:latest",
-        "repo": "crazy.io"
+        "name": "transfer-default-notebook-test-00:latest",
+        "repo": "my-local-repo"
     },
 
     "ports": {
-        "default" : [8889, 6007]
+        "public" : [8080],
+        "jupyter" : 8080
     },
 
     "gpu": {

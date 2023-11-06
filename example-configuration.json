@@ -1,20 +1,36 @@
 {
     "container": {
-        "name": "transfer-default-notebook"
+        // Running container configuration
+
+        // The name used for the container, a different
+        // one needs to be used for each one of the containers 
+        "name": "transfer-default-notebook" 
     },
 
     "image" : {
-        "name" : "transfer-default-image"
+        // The configuration for the image to be built
+        // and used for the running container
+        "name" : "transfer-default-notebook-test-00:latest",
+        "repo" : "my-local-repo",
+        "dockerfile": "Dockerfile.work"
     },
 
     "volume": {
+        // Information about the work directory to be used
+        // The work in this directory is going to be kept
+        // in the image upon commit 
+
+        // Full path to the directory on the host
         "host-directory" : "<replace with host workspace directory>",
+        // Full path to the directory inside the container
         "mount-point" : "/tf/inside-work"
     },
 
     "commit": {
-        "name": "bare-notebook:latest",
-        "repo": "crazy.io"
+        // Information about the image name and repository when
+        // commiting the image to save status and work
+        "name": "transfer-default-notebook-test-00:latest",
+        "repo": "my-local-repo"
     },
 
     "ports": {
