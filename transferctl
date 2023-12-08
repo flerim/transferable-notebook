@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import os
 import argparse
 import json
 import subprocess
@@ -104,7 +104,8 @@ def start_container(config):
     image_name = config["image"]["name"]
     repo_name = config["image"]["repo"]
     volume_mount_point = config["volume"]["mount-point"]
-    host_directory = config["volume"]["host-directory"],
+    host_directory = config["volume"]["host-directory"]
+    user_home = config["volume"]["user-home"]
     portmaps = [f"{portnumber}:{portnumber}"
                 for portnumber in config["ports"]["public"]]
 
@@ -116,9 +117,18 @@ def start_container(config):
         else:
             subprocess.run(["docker", "start", "-a", container_name])
     else:
+        uid = os.geteuid()
+        gid = os.getegid()
         # Create and start a new container
-        run_list = ["docker", "run", "--name", container_name,
-                    "-v", f"{host_directory[0]}:{volume_mount_point}"]
+        run_list = [
+            "docker", "run",
+            "--user", f"{uid}:{gid}",
+            "--name", container_name,
+            "--env", f"HOME=/user_home",
+            "--env", f"NOTEBOOK_DIR={volume_mount_point}",
+            "-v", f"{host_directory}:{volume_mount_point}",
+            "-v", f"{user_home}:/user_home"
+        ]
 
         for portmap in portmaps:
             run_list += ["-p", portmap]
@@ -144,7 +154,6 @@ def start_container(config):
 
         run_list += [f"{repo_name}/{image_name}"]
 
-        print(run_list)
         subprocess.run(run_list)
 
 
@@ -161,9 +170,14 @@ def save_container(config):
     commit_name = config["commit"]["name"]
     repo = config["commit"]["repo"]
     host_directory = config["volume"]["host-directory"]
+    user_home = config["volume"]["user-home"]
+    archive_path = config["volume"]["archive-path"]
     subprocess.run(
         ["docker", "cp", f"{host_directory}",
-         f"{container_name}:/tf/archive/"])
+         f"{container_name}:{archive_path}_user_data"])
+    subprocess.run(
+        ["docker", "cp", f"{user_home}",
+         f"{container_name}:{archive_path}_user_home"])
     subprocess.run(
         ["docker", "commit", container_name, f"{repo}/{commit_name}"])
 
