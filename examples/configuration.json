@@ -22,8 +22,10 @@
 
         // Full path to the directory on the host
         "host-directory" : "<replace with host workspace directory>",
+        "user-home" : "<replace with a directory to hold user-data>",
         // Full path to the directory inside the container
-        "mount-point" : "/tf/inside-work"
+        "mount-point" : "/inside",
+        "archive-path" : "/archive"
     },
 
     "commit": {

@@ -16,11 +16,19 @@ The entire operation consists of a few steps that can be performed via the contr
 
 One needs to define in the control configuration file ( customizable via the first positional argument of the control script ). 
 
-**First copy the example configuration** file example-configuration.json to configuration.json and set the following parameters:
+**First copy the example configuration** file examples/configuration.json to configuration.json and set any unset parameters, most importantly the following parameters:
 
 - The container name `{"container": {"name": "<value of container name>"}}` which is going to be used to name the container. One should take care to avoid overwriting currently running containers. 
 - The image name `{"image" : {"name" : "<value of image name>"}}`
 - The host-directory `{"volume":{"host-directory":"<location on host to mount>"}}` , this is where all the code, models, and data can be found
+
+**Other necessary parameter files** are also under the examples directory, specifically:
+
+1. Dockerfile.work provides an example for defining the image to run. The CMD part must not be changed or this script may not work as expected.
+2. dev_requirements.txt is an example file that is needed by Dockerfile.work to install any user specified requirements for the base image.
+
+These files need to be customized as needed.
+
 
 ## Using the script
 
